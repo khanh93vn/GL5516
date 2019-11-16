@@ -26,15 +26,13 @@ do duoc o do sang LED x/255 (do nhieu lan).
 
 import serial
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 from struct import unpack
 
 # -----------------------------------------------------------------------------
 # Constants
 
-PORT = 'COM4' # adjusted according to connected port
+DEFAULTPORT = 'COM4' # adjusted according to connected port
 BAUDRATE = 115200
 
 BUFFERSIZE = 100
@@ -46,7 +44,7 @@ RREF = 10000.0
 # -----------------------------------------------------------------------------
 # Functions
 
-def start(port=PORT, baudrate=BAUDRATE):
+def start(port=DEFAULTPORT, baudrate=BAUDRATE):
     com = serial.Serial(port, baudrate, timeout=5)
     try:
         print(com.readline().decode())
@@ -61,13 +59,12 @@ def stop(com):
     com.flushInput()
     com.close()
 
-
 def send(com, message):
     com.write("{0:04d}".format(message).encode())
 
 
-def receive(com, size, format):
-    return np.array(unpack(format, com.read(size)))
+def receive(com, size=BUFFERSIZE*2, format=BUFFERFORMAT):
+    return np.array(unpack(format, com.read(size)), dtype='uint16')
 
 
 def adjustAndMeasure(com, inp, size=BUFFERSIZE*2, format=BUFFERFORMAT):
@@ -81,8 +78,11 @@ def res(Vout, Vcc=VCC, Rref=RREF):
 # -----------------------------------------------------------------------------
 # Main
 
-# Start serial communication:
-# stream = start(PORT, BAUDRATE)
+if __name__ == "__main__":
+    # Start serial communication:
+    # stream = start(DEFAULTPORT, BAUDRATE)
 
-# Close communication:
-# stop(stream)
+    # Close communication:
+    # stop(stream)
+    
+    pass

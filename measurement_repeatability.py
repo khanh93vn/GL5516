@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 from sys import exit
-from time import time, localtime, sleep
+from time import ctime, time, localtime, sleep
 from struct import unpack
 from numpy import array
 from serial import Serial
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         Vout2.tofile("Vout2_" + str(now) + ".dat")
         
         # Display output:
-        print(time.ctime(now)
+        print(ctime(now)
               + "... Measured V_outs:\n%d\n%d\n..."
                 %(Vout1.mean(), Vout2.mean()))
         

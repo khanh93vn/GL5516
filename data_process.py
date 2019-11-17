@@ -22,9 +22,11 @@ PATH_DATA_CALIBRATION = "data/calibration.csv"
 
 PATH_FIG_IDEAL_LINE = "figures/ideal_straight_line.png"
 PATH_FIG_TRANSFER_CURVE = "figures/transfer_curve.png"
+PATH_FIG_TRANSFER_CURVE_LIMITED = "figures/transfer_curve_limited.png"
 PATH_FIG_NONLINEARITY = "figures/nonlinearity.png"
 PATH_FIG_HYSTERESIS = "figures/hysteresis.png"
-PATH_FIG_IO_LOG_SCALE = "figures/io_log_scale.png"
+PATH_FIG_LOG_IO = "figures/log_io.png"
+PATH_FIG_LOG_IO_LINE = "figures/log_io_line.png"
 PATH_FIG_DISTRIBUTION = "figures/distribution.png"
 
 LABEL_ILLUMINATION = "Light intesity (lux)"
@@ -134,29 +136,34 @@ if __name__ == "__main__":
     # ------------------------------------------------------------------------
     # Phuong trinh vao ra (transfer equation)
     
-    # Quan sat du lieu:
-    plt.plot(I, O2, label="O - Decreasing input",
-             marker='o', linestyle='none', color='b')
-    plt.plot(I, O1, label="O - Increasing input",
-             marker='o', linestyle='none', color='r')
-    plt.legend()
-    plt.title("Resistance of LDR GL5516 in logarithmic scale")
-    plt.xlabel(LABEL_ILLUMINATION)
-    plt.ylabel(LABEL_RESISTANCE)
-    
-    # ... duoc ve trong khong gian log:
-    plt.yscale('log')
-    plt.xscale('log')
-    
-    # Luu do thi:
-    plt.savefig(PATH_FIG_IO_LOG_SCALE)
-    
     # Moi quan he vao-ra tro nen (tuong doi) tuyen tinh sau khi duoc chuyen
     # ve khong gian logarit (theo ly thuyet co the o bat ky co so nao).
     # Chuyen so lieu dau vao va dau ra sang khong gian log (co so e):
     I_log = np.log(I)
     O1_log = np.log(O1)
     O2_log = np.log(O2)
+    
+    # Ve do thi:
+    plt.plot(I_log, O2_log, label="O - Decreasing input",
+             marker='o', linestyle='none', color='b')
+    plt.plot(I_log, O1_log, label="O - Increasing input",
+             marker='o', linestyle='none', color='r')
+    plt.legend()
+    plt.title("log(O) vs. log(I)")
+    plt.xlabel("log(I)")
+    plt.ylabel("log(O)")
+    
+    # Luu do thi:
+    plt.savefig(PATH_FIG_LOG_IO)
+    
+    plt.plot([I_log[0], I_log[-1]],
+             [O1_log[0], O1_log[-1]],
+             label="O - Expected",
+             linewidth=0.5, color='k')
+    plt.legend()
+    plt.savefig(PATH_FIG_LOG_IO_LINE)
+    
+    plt.cla()
     
     # Phuong trinh quan he vao-ra:
     #     log(O) = m*log(I) + b
@@ -179,23 +186,30 @@ if __name__ == "__main__":
     f = lambda I: 1/(1/R_co + 1/(c*I**m))
     
     # Ve do thi:
-    plt.yscale('linear')
-    plt.xscale('linear')
     x = np.linspace(0, I.max(), 200)
-    plt.plot(x, f(x), label="Estimated O",
+    plt.plot(x, f(x), label="O - Estimated",
              linewidth=0.5, color='k')
-    
+
     # Gia tri dien tro theo datasheet:
+    plt.plot(I, O2, label="O - Decreasing input",
+             marker='o', linestyle='none', color='b')
+    plt.plot(I, O1, label="O - Increasing input",
+             marker='o', linestyle='none', color='r')
+    
     plt.plot(0, R_co, label="Dark resistance",
              marker='o', linestyle='none', color='k')
     plt.plot(10, 7.5e+3, label="Resistance at 10 lux",
              marker='o', linestyle='none', color='y')
     plt.legend()
     plt.title("Resistance of LDR GL5516")
+    plt.xlabel(LABEL_ILLUMINATION)
+    plt.ylabel(LABEL_RESISTANCE)
     # plt.yscale('log')
     
     # Luu do thi:
     plt.savefig(PATH_FIG_TRANSFER_CURVE)
+    plt.ylim(0, 10000)
+    plt.savefig(PATH_FIG_TRANSFER_CURVE_LIMITED)
     plt.cla()
     
     # ------------------------------------------------------------------------

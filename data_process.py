@@ -3,7 +3,7 @@ Process static calibration data, draw plots and fit model.
 Xu ly du lieu ve dac tinh tinh, ve do thi va tim phuong trinh quan he vao ra.
 """
 
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Imports
 
 import numpy as np
@@ -13,7 +13,7 @@ import matplotlib.ticker as ticker
 
 from scipy.optimize import curve_fit
 
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Constants
 
 PATH_DATA_MEASURED = "data/measured.csv"
@@ -28,7 +28,7 @@ PATH_FIG_IO_LOG_SCALE = "figures/io_log_scale.png"
 LABEL_ILLUMINATION = "Light intesity (lux)"
 LABEL_RESISTANCE = "Resistance ($\Omega$)"
 
-# -----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Script
 
 if __name__ == "__main__":
@@ -39,7 +39,7 @@ if __name__ == "__main__":
     
     I, O1, O2 = df.to_numpy().T
 
-    # -------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Ve dac tuyen quan he vao ra (characteristic line)
     
     I_min = I[0]
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     plt.savefig(PATH_FIG_IDEAL_LINE)
     plt.cla()
     
-    # -------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Do nhay (sensitivity)
     
     # Do nhay:
@@ -74,7 +74,7 @@ if __name__ == "__main__":
     # Phuong trinh dac tuyen:
     O = lambda I: K*I + a
     
-    # -------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Do phi tuyen (non-linearity)
     N = O2 - O(I) # (lay gia tri cua bang do giam)
     
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     # Chep do phi tuyen vao bang du lieu:
     df['N'] = N
     
-    # -------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Do tre (hysteresis)
     H = O1 - O2
     
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     # Chep do tre vao bang du lieu:
     df['H'] = H
     
-    # -------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # Phuong trinh vao ra (transfer equation)
     
     # Quan sat du lieu:
@@ -194,11 +194,12 @@ if __name__ == "__main__":
     
     # Luu do thi:
     plt.savefig(PATH_FIG_TRANSFER_CURVE)
-    plt.cla()
     
-    # -------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     # In/luu du lieu da xu ly
     
     df.to_csv(PATH_DATA_CALIBRATION)
+    print("Dac tuyen quan he vao ra: O(I) = KI + a\nK = %.2f\na = %.2f"
+          %(K, a))
     print("Do phi tuyen cuc dai: %.0f %%" %(N_max_fsd * 100))
     print("Do tre cuc dai: %.0f %%" %(H_max_fsd * 100))

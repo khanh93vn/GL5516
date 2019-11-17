@@ -1,0 +1,8 @@
+Phuong trinh vao ra:
+    Nguyễn Hữu Cường, 2007, Giáo trình Cảm Biến.
+    datasheet
+    https://www.allaboutcircuits.com/projects/design-a-luxmeter-using-a-light-dependent-resistor/
+    https://stackoverflow.com/questions/41109122/fitting-a-curve-to-a-power-law-distribution-with-curve-fit-does-not-work/41109662
+
+Bang so lieu cac do sang pho bien, ...:
+    https://en.wikipedia.org/wiki/Lux

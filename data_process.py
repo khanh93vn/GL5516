@@ -17,6 +17,7 @@ from scipy.optimize import curve_fit
 # Constants
 
 PATH_DATA_MEASURED = "data/measured.csv"
+PATH_DATA_MEASURED_REPEATABILITY = "data/measured_repeatability.csv"
 PATH_DATA_CALIBRATION = "data/calibration.csv"
 
 PATH_FIG_IDEAL_LINE = "figures/ideal_straight_line.png"
@@ -24,6 +25,7 @@ PATH_FIG_TRANSFER_CURVE = "figures/transfer_curve.png"
 PATH_FIG_NONLINEARITY = "figures/nonlinearity.png"
 PATH_FIG_HYSTERESIS = "figures/hysteresis.png"
 PATH_FIG_IO_LOG_SCALE = "figures/io_log_scale.png"
+PATH_FIG_DISTRIBUTION = "figures/distribution.png"
 
 LABEL_ILLUMINATION = "Light intesity (lux)"
 LABEL_RESISTANCE = "Resistance ($\Omega$)"
@@ -194,6 +196,39 @@ if __name__ == "__main__":
     
     # Luu do thi:
     plt.savefig(PATH_FIG_TRANSFER_CURVE)
+    plt.cla()
+    
+    # ------------------------------------------------------------------------
+    # Xu ly du lieu do lap (repeatability)
+    
+    df_rep = pd.read_csv(PATH_DATA_MEASURED_REPEATABILITY)
+    _, O = df_rep.to_numpy().T
+    
+    # Gia tri trung binh (mean):
+    mean = O.mean()
+    
+    # Do lech chuan (standard deviation):
+    std = O.std()
+    
+    # Ve histogram phan bo du lieu:
+    plt.hist(O, bins=50, density=True) # Ve do thi phan bo
+    
+    # Tinh va ve duong phan bo chuan (normal distribution)
+    x = np.linspace(O.min(), O.max(), 100)
+    y = np.exp(-(x-mean)*(x-mean)/2/std/std)/np.sqrt(2*np.pi*std*std)
+    plt.plot(x, y, linewidth=3)
+    
+    # Trang tri do thi:
+    plt.title("Distribution of LDR GL5516 resistance at 88 lux")
+    plt.xlabel(LABEL_RESISTANCE)
+    plt.ylabel("Proportions")
+    plt.text(np.percentile(O, 99), # Hoanh do cua chu thich
+             np.percentile(y, 90), # Tung do cua chu thich
+             "$\mu$ = %.2f\n$\sigma$ = %.2f\nN = %d"
+             %(mean, std, len(O)))
+
+    # Luu do thi:
+    plt.savefig(PATH_FIG_DISTRIBUTION)
     
     # ------------------------------------------------------------------------
     # In/luu du lieu da xu ly
@@ -203,3 +238,4 @@ if __name__ == "__main__":
           %(K, a))
     print("Do phi tuyen cuc dai: %.0f %%" %(N_max_fsd * 100))
     print("Do tre cuc dai: %.0f %%" %(H_max_fsd * 100))
+    
